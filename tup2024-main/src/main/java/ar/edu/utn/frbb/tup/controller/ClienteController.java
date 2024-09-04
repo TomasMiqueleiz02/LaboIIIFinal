@@ -1,30 +1,66 @@
 package ar.edu.utn.frbb.tup.controller;
 
-import ar.edu.utn.frbb.tup.controller.dto.ClienteDto;
-import ar.edu.utn.frbb.tup.controller.validator.ClienteValidator;
 import ar.edu.utn.frbb.tup.model.Cliente;
-import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
 import ar.edu.utn.frbb.tup.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/cliente")
+@RequestMapping("/api/clientes")
 public class ClienteController {
 
-    @Autowired
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
 
     @Autowired
-    private ClienteValidator clienteValidator;
-
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
 
     @PostMapping
-    public Cliente crearCliente(@RequestBody ClienteDto clienteDto) throws ClienteAlreadyExistsException {
-        clienteValidator.validate(clienteDto);
-        return clienteService.darDeAltaCliente(clienteDto);
+    public ResponseEntity<?> darDeAltaCliente(@RequestBody Cliente cliente) {
+        try {
+            Cliente nuevoCliente = clienteService.darDeAltaCliente(cliente);
+            return new ResponseEntity<>(nuevoCliente, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al dar de alta el cliente", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/{dni}")
+    public ResponseEntity<?> buscarClientePorDni(@PathVariable long dni) {
+        try {
+            Cliente cliente = clienteService.buscarClientePorDni(dni);
+            if (cliente != null) {
+                return new ResponseEntity<>(cliente, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Cliente no encontrado", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al buscar el cliente", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Cliente>> obtenerTodosLosClientes() {
+        try {
+            List<Cliente> clientes = clienteService.obtenerTodosLosClientes();
+            return new ResponseEntity<>(clientes, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/{dni}")
+    public ResponseEntity<?> eliminarCliente(@PathVariable long dni) {
+        try {
+            clienteService.eliminarCliente(dni);
+            return new ResponseEntity<>("Cliente eliminado con éxito", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error al eliminar el cliente", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

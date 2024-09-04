@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup;
 
+import ar.edu.utn.frbb.tup.controller.dto.TransferenciaDto;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

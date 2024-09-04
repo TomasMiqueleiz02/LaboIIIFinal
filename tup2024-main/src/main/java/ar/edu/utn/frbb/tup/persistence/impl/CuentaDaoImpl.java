@@ -24,8 +24,13 @@ public class CuentaDaoImpl implements CuentaDao {
     }
 
     @Override
-    public List<Cuenta> findAll() {
-        return new ArrayList<>(repositorioCuentas.values());
+    public List<Cuenta> findAllCuentas() {
+        return null;
+    }
+
+    @Override
+    public Cuenta darDeAltaCuenta(Cuenta cuenta) {
+        return null;
     }
 
     @Override

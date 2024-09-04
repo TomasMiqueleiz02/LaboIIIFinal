@@ -1,27 +1,35 @@
-package ar.edu.utn.frbb.tup.controller.validator;
-
-import org.springframework.stereotype.Component;
+package ar.edu.utn.frbb.tup.service.validator;
 
 import ar.edu.utn.frbb.tup.controller.dto.CuentaDto;
-
+import ar.edu.utn.frbb.tup.model.TipoMoneda;
+import ar.edu.utn.frbb.tup.model.exception.DatoIngresadoInvalidoException;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CuentaValidator {
 
-    public void validate(CuentaDto cuentaDto) {
-        validateTipoCuenta(cuentaDto);
-        validateMoneda(cuentaDto);
+    public void validate(CuentaDto cuentaDto) throws DatoIngresadoInvalidoException {
+        validateDniTitular(cuentaDto);
+        validateSaldo(cuentaDto);
+        validateTipoMoneda(cuentaDto);
     }
 
-    private void validateTipoCuenta(CuentaDto cuentaDto) {
-        if (!"C".equals(cuentaDto.getTipoCuenta()) || !"A".equals(cuentaDto.getTipoCuenta())) {
-            throw new IllegalArgumentException("El tipo de cuenta no es correcto");
+    private void validateDniTitular(CuentaDto cuentaDto) throws DatoIngresadoInvalidoException {
+        if (cuentaDto.getDniTitular() <0) {
+            throw new DatoIngresadoInvalidoException("El número de dni debe ser un número mayor que cero");
         }
     }
 
-    private void validateMoneda(CuentaDto cuentaDto) {
-        if (!"P".equals(cuentaDto.getMoneda()) || !"D".equals(cuentaDto.getMoneda())) {
-            throw new IllegalArgumentException("El tipo de moneda no es correcto");
+    private void validateSaldo(CuentaDto cuentaDto) throws DatoIngresadoInvalidoException {
+        if (cuentaDto.getBalance() < 0) {
+            throw new DatoIngresadoInvalidoException("El saldo no puede ser negativo");
         }
     }
+
+    private void validateTipoMoneda(CuentaDto cuentaDto) throws DatoIngresadoInvalidoException {
+        if (cuentaDto.getMoneda() == null || cuentaDto.getMoneda().isEmpty()) {
+            throw new DatoIngresadoInvalidoException("El tipo de moneda es obligatorio");
+        }
+    }
+
 }

@@ -1,31 +1,21 @@
 package ar.edu.utn.frbb.tup.service;
 
-import ar.edu.utn.frbb.tup.controller.dto.CuentaDto;
 import ar.edu.utn.frbb.tup.model.Cuenta;
-import ar.edu.utn.frbb.tup.model.exception.TipoCuentaAlreadyExistsException;
-import ar.edu.utn.frbb.tup.persistence.CuentaDao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import ar.edu.utn.frbb.tup.model.TipoCuenta;
+import ar.edu.utn.frbb.tup.model.exception.CuentaNoEncontradaException;
 
-@Component
-public class CuentaService {
-    CuentaDao cuentaDao = new CuentaDao();
+import java.util.List;
 
-    @Autowired
-    ClienteService clienteService;
+public interface CuentaService {
 
-    public Cuenta darDeAltaCuenta(CuentaDto cuentaDto) throws TipoCuentaAlreadyExistsException {
-        //Chequear cuentas soportadas por el banco CA$ CC$ CAU$S
-        // if (!tipoCuentaEstaSoportada(cuenta)) {...}
-        Cuenta cuenta = new Cuenta(cuentaDto);
+    Cuenta darDeAltaCuenta(Cuenta cuenta);
 
-        clienteService.agregarCuenta(cuenta, cuentaDto.getDniTitular());
-        cuentaDao.save(cuenta);
-        
-        return cuenta;
-    }
+    boolean tipoCuentaEstaSoportada(TipoCuenta tipoCuenta);
 
-    public Cuenta find(long id) {
-        return cuentaDao.find(id);
-    }
+    Cuenta findByID(long numeroCuenta) throws CuentaNoEncontradaException;
+
+    List<Cuenta> findAll();
+
+    void eliminarCuenta(long numeroCuenta) throws CuentaNoEncontradaException;
 }
+

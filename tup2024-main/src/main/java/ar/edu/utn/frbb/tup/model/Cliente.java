@@ -6,72 +6,48 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Cliente extends Persona{
+import java.util.ArrayList;
+import java.util.List;
 
-    private TipoPersona tipoPersona;
-    private String banco;
-    private LocalDate fechaAlta;
-    private Set<Cuenta> cuentas = new HashSet<>();
+public class Cliente {
+    private long dni;
+    private String nombre;
+    private String apellido;
+    private List<Cuenta> cuentas;
 
-    public Cliente() {
-        super();
-    }
-    public Cliente(ClienteDto clienteDto) {
-        super(clienteDto.getDni(), clienteDto.getApellido(), clienteDto.getNombre(), clienteDto.getFechaNacimiento());
-        fechaAlta = LocalDate.now();
-        banco = clienteDto.getBanco();
-    }
-
-    public TipoPersona getTipoPersona() {
-        return tipoPersona;
+    public Cliente(long dni, String nombre, String apellido) {
+        this.dni = dni;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cuentas = new ArrayList<>();
     }
 
-    public void setTipoPersona(TipoPersona tipoPersona) {
-        this.tipoPersona = tipoPersona;
+    public long getDni() {
+        return dni;
     }
 
-    public String getBanco() {
-        return banco;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setBanco(String banco) {
-        this.banco = banco;
+    public String getApellido() {
+        return apellido;
     }
 
-    public LocalDate getFechaAlta() {
-        return fechaAlta;
-    }
-
-    public void setFechaAlta(LocalDate fechaAlta) {
-        this.fechaAlta = fechaAlta;
-    }
-
-    public Set<Cuenta> getCuentas() {
+    public List<Cuenta> getCuentas() {
         return cuentas;
     }
 
-    public void addCuenta(Cuenta cuenta) {
+    public void agregarCuenta(Cuenta cuenta) {
         this.cuentas.add(cuenta);
-        cuenta.setTitular(this);
     }
 
-    public boolean tieneCuenta(TipoCuenta tipoCuenta, TipoMoneda moneda) {
-        for (Cuenta cuenta:
-                cuentas) {
-            if (tipoCuenta.equals(cuenta.getTipoCuenta()) && moneda.equals(cuenta.getMoneda())) {
-                return true;
-            }
-        }
-        return false;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "tipoPersona=" + tipoPersona +
-                ", banco='" + banco + '\'' +
-                ", fechaAlta=" + fechaAlta +
-                ", cuentas=" + cuentas +
-                '}';
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 }
+

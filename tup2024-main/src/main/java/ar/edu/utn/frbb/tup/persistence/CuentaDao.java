@@ -11,8 +11,9 @@ public interface CuentaDao {
 
     Cuenta findCuenta(long numeroCuenta);
 
-    List<Cuenta> findAll();
+    List<Cuenta> findAllCuentas();
 
+    Cuenta darDeAltaCuenta(Cuenta cuenta);
     Cuenta updateCuenta(Cuenta cuenta);
 
     void deleteCuenta(long id);
