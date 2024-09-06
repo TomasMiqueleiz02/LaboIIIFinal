@@ -1,4 +1,4 @@
-package ar.edu.utn.frbb.tup.service.impl;
+package ar.edu.utn.frbb.tup.service.Impl;
 
 import ar.edu.utn.frbb.tup.model.Cuenta;
 import ar.edu.utn.frbb.tup.model.TipoCuenta;

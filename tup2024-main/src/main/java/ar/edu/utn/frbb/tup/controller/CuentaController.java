@@ -21,7 +21,7 @@ public class CuentaController {
         this.cuentaService = cuentaService;
     }
 
-    @PostMapping
+    @PostMapping("/alta")
     public ResponseEntity<?> darDeAltaCuenta(@RequestBody Cuenta cuenta) {
         try {
             Cuenta nuevaCuenta = cuentaService.darDeAltaCuenta(cuenta);
@@ -45,7 +45,7 @@ public class CuentaController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/obtener")
     public ResponseEntity<List<Cuenta>> findAll() {
         try {
             List<Cuenta> cuentas = cuentaService.findAll();

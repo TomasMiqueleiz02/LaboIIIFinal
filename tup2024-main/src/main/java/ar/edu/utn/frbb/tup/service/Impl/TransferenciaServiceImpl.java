@@ -11,6 +11,7 @@ import ar.edu.utn.frbb.tup.model.exception.NoAlcanzaException;
 import ar.edu.utn.frbb.tup.model.exception.TipoMonedaException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import ar.edu.utn.frbb.tup.persistence.TransferenciaDao;
+import ar.edu.utn.frbb.tup.service.BanelcoService;
 import ar.edu.utn.frbb.tup.service.TransferenciaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

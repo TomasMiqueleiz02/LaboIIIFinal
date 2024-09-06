@@ -20,7 +20,7 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
-    @PostMapping
+    @PostMapping ("/alta")
     public ResponseEntity<?> darDeAltaCliente(@RequestBody Cliente cliente) {
         try {
             Cliente nuevoCliente = clienteService.darDeAltaCliente(cliente);
@@ -44,7 +44,7 @@ public class ClienteController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/obtener")
     public ResponseEntity<List<Cliente>> obtenerTodosLosClientes() {
         try {
             List<Cliente> clientes = clienteService.obtenerTodosLosClientes();
