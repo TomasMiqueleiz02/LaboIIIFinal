@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cliente {
+public class Cliente extends Persona {
 
     private long dni;
     private String nombre;
@@ -18,23 +18,15 @@ public class Cliente {
     @JsonManagedReference
     private List<Cuenta> cuentas;
 
-    public Cliente(long dni, String nombre, String apellido) {
-        this.dni = dni;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.tipoPersona = TipoPersona.PERSONA_FISICA; // Valor predeterminado de cualquier persona
-        this.fechaAlta = LocalDateTime.now();
-        this.cuentas = new ArrayList<>();
-    }
-
     public Cliente(ClienteDto clienteDto) {
         this.dni = clienteDto.getDni();
         this.nombre = clienteDto.getNombre();
         this.apellido = clienteDto.getApellido();
-        this.tipoPersona = TipoPersona.fromString(clienteDto.getTipoPersona());
+        this.tipoPersona = clienteDto.getTipoPersona();
         this.fechaAlta = LocalDateTime.now();
         this.cuentas = new ArrayList<>();
     }
+    public Cliente(){}
 
     public long getDni() {
         return dni;
@@ -48,18 +40,6 @@ public class Cliente {
         return apellido;
     }
 
-    public TipoPersona getTipoPersona() {
-        return tipoPersona;
-    }
-
-    public void setTipoPersona(TipoPersona tipoPersona) {
-        this.tipoPersona = tipoPersona;
-    }
-
-    public LocalDateTime getFechaAlta() {
-        return fechaAlta;
-    }
-
     public List<Cuenta> getCuentas() {
         return cuentas;
     }
@@ -68,13 +48,22 @@ public class Cliente {
         this.cuentas.add(cuenta);
         cuenta.setTitular(this); // Para mantener la relación inversa
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public void setApellido(String apellido) {
         this.apellido = apellido;
+    }
+    public void setDni(long dni) {
+        this.dni = dni;
+    }
+
+    public void setTipoPersona(TipoPersona tipoPersona) {
+        this.tipoPersona = tipoPersona;
+    }
+
+    public TipoPersona getTipoPersona() {
+        return tipoPersona;
     }
 
     @Override

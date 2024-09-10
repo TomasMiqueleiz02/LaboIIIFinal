@@ -1,25 +1,33 @@
 package ar.edu.utn.frbb.tup.service;
 
-import ar.edu.utn.frbb.tup.model.Cliente;
-import ar.edu.utn.frbb.tup.model.Cuenta;
-import ar.edu.utn.frbb.tup.model.TipoCuenta;
-import ar.edu.utn.frbb.tup.model.TipoMoneda;
+import ar.edu.utn.frbb.tup.controller.dto.ClienteDto;
+import ar.edu.utn.frbb.tup.model.*;
+import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.ClienteMenorDeEdadException;
 import ar.edu.utn.frbb.tup.model.exception.ClienteNoEncontradoException;
 import ar.edu.utn.frbb.tup.persistence.ClienteDao;
 import ar.edu.utn.frbb.tup.service.Impl.ClienteServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ClienteServiceTest {
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
+public class ClienteServiceTest {
 
     @Mock
     private ClienteDao clienteDao;
@@ -27,72 +35,89 @@ class ClienteServiceTest {
     @InjectMocks
     private ClienteServiceImpl clienteService;
 
-    private Cliente cliente;
-    private Cuenta cuenta;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        cliente = new Cliente();
-        cliente.setNombre("Juan");
-        cliente.setDni(12345678L);
-        // Inicializa otros campos si es necesario
-    }
-
-
     @Test
-    void testDarDeAltaCliente() {
-        // Configura el mock para retornar el cliente
+    public void testDarDeAltaCliente() throws ClienteAlreadyExistsException, ClienteMenorDeEdadException {
+        ClienteDto clienteDto = getClienteDto();
+        Cliente cliente = convertirDtoAEntidad(clienteDto);
+
+        when(clienteDao.findCliente(clienteDto.getDni())).thenReturn(null); // Cliente no existe
         when(clienteDao.saveCliente(any(Cliente.class))).thenReturn(cliente);
+        // Guardado exitoso
 
-        // Llama al método del servicio
-        Cliente resultado = clienteService.darDeAltaCliente(cliente);
+        ClienteDto nuevoClienteDto = clienteService.darDeAltaCliente(clienteDto);
 
-        // Verifica el resultado
-        assertNotNull(resultado); // Asegúrate de que el resultado no sea null
-        assertEquals("Juan", resultado.getNombre()); // Verifica que el nombre es correcto
-        verify(clienteDao, times(1)).saveCliente(any(Cliente.class)); // Verifica que el DAO fue llamado correctamente
-    }
-
-
-    @Test
-    void testAgregarCuenta() {
-        when(clienteDao.findCliente(12345678L)).thenReturn(cliente);
-        clienteService.agregarCuenta(12345678L, cuenta);
-        assertEquals(1, cliente.getCuentas().size());
-        verify(clienteDao, times(1)).updateCliente(cliente);
+        assertNotNull(nuevoClienteDto);
+        assertEquals(clienteDto.getNombre(), nuevoClienteDto.getNombre());
     }
 
     @Test
-    void testBuscarClientePorDni() throws ClienteNoEncontradoException {
-        when(clienteDao.findCliente(12345678L)).thenReturn(cliente);
-        Cliente resultado = clienteService.buscarClientePorDni(12345678L);
-        assertNotNull(resultado);
-        assertEquals("Juan", resultado.getNombre());
-        verify(clienteDao, times(1)).findCliente(12345678L);
+    public void testBuscarClientePorDni() throws ClienteNoEncontradoException {
+        long dni = 12345678L;
+        ClienteDto clienteDto = getClienteDto();
+        Cliente cliente = convertirDtoAEntidad(clienteDto);
+
+        when(clienteDao.findCliente(dni)).thenReturn(cliente);
+
+        ClienteDto clienteBuscado = clienteService.buscarClientePorDni(dni);
+
+        assertNotNull(clienteBuscado);
+        assertEquals(clienteDto.getNombre(), clienteBuscado.getNombre());
     }
 
     @Test
-    void testObtenerTodosLosClientes() {
-        List<Cliente> clientes = Arrays.asList(cliente);
+    public void testObtenerTodosLosClientes() {
+        List<Cliente> clientes = Arrays.asList(new Cliente(), new Cliente());
+        List<ClienteDto> clientesDto = clientes.stream()
+                .map(this::convertirEntidadADto)
+                .toList();
+
         when(clienteDao.findAll()).thenReturn(clientes);
-        List<Cliente> resultado = clienteService.obtenerTodosLosClientes();
-        assertEquals(1, resultado.size());
-        verify(clienteDao, times(1)).findAll();
-    }
 
-    @Test
-    void testActualizarCliente() {
-        when(clienteDao.updateCliente(cliente)).thenReturn(cliente);
-        Cliente resultado = clienteService.actualizarCliente(cliente);
+        List<ClienteDto> resultado = clienteService.obtenerTodosLosClientes();
+
         assertNotNull(resultado);
-        assertEquals("Juan", resultado.getNombre());
-        verify(clienteDao, times(1)).updateCliente(cliente);
+        assertEquals(clientesDto.size(), resultado.size());
     }
 
     @Test
-    void testEliminarCliente() {
-        clienteService.eliminarCliente(12345678L);
-        verify(clienteDao, times(1)).deleteCliente(12345678L);
+    public void testEliminarCliente() throws ClienteNoEncontradoException {
+        long dni = 12345678L;
+
+        when(clienteDao.findCliente(dni)).thenReturn(new Cliente()); // Cliente existe
+        doNothing().when(clienteDao).deleteCliente(dni);
+
+        clienteService.eliminarCliente(dni);
+
+        verify(clienteDao, times(1)).deleteCliente(dni);
+    }
+
+    private ClienteDto getClienteDto() {
+        ClienteDto clienteDto = new ClienteDto();
+        clienteDto.setNombre("Pepe");
+        clienteDto.setApellido("Rino");
+        clienteDto.setDni(12345678L);
+        clienteDto.setFechaNacimiento(LocalDate.of(1997, 10, 17));
+        clienteDto.setTipoPersona(TipoPersona.FISICA);
+        return clienteDto;
+    }
+
+    private Cliente convertirDtoAEntidad(ClienteDto clienteDto) {
+        Cliente cliente = new Cliente();
+        cliente.setNombre(clienteDto.getNombre());
+        cliente.setApellido(clienteDto.getApellido());
+        cliente.setDni(clienteDto.getDni());
+        cliente.setFechaNacimiento(clienteDto.getFechaNacimiento());
+        cliente.setTipoPersona(clienteDto.getTipoPersona());
+        return cliente;
+    }
+
+    private ClienteDto convertirEntidadADto(Cliente cliente) {
+        ClienteDto clienteDto = new ClienteDto();
+        clienteDto.setNombre(cliente.getNombre());
+        clienteDto.setApellido(cliente.getApellido());
+        clienteDto.setDni(cliente.getDni());
+        clienteDto.setFechaNacimiento(cliente.getFechaNacimiento());
+        clienteDto.setTipoPersona(cliente.getTipoPersona());
+        return clienteDto;
     }
 }

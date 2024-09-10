@@ -9,12 +9,23 @@ public class TransferenciaDto {
     private long cuentaDestino;
     private double monto;
     private String moneda;
+    private String descripcionBreve;
+    private String tipo;
 
-    public TransferenciaDto(long cuentaOrigen, long cuentaDestino, double monto, String moneda) {
-        this.cuentaOrigen = cuentaOrigen;
-        this.cuentaDestino = cuentaDestino;
-        this.monto = monto;
-        this.moneda = moneda;
+    public String getDescripcionBreve() {
+        return descripcionBreve;
+    }
+
+    public void setDescripcionBreve(String descripcionBreve) {
+        this.descripcionBreve = descripcionBreve;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public long getCuentaOrigen() {

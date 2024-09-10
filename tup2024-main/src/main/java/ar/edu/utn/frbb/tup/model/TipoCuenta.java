@@ -1,26 +1,16 @@
 package ar.edu.utn.frbb.tup.model;
 
 public enum TipoCuenta {
+    CUENTA_CORRIENTE, CAJA_AHORRO;
 
-    CUENTA_CORRIENTE("C"),
-    CAJA_AHORRO("A");
-
-    private final String descripcion;
-
-    TipoCuenta(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public static TipoCuenta fromString(String text) {
-        for (TipoCuenta tipo : TipoCuenta.values()) {
-            if (tipo.descripcion.equalsIgnoreCase(text)) {
-                return tipo;
+    public static TipoCuenta fromString(String tipo) {
+        for (TipoCuenta tc : TipoCuenta.values()) {
+            if (tc.name().equalsIgnoreCase(tipo)) {
+                return tc;
             }
         }
-        throw new IllegalArgumentException("No se pudo encontrar un TipoCuenta con la descripción: " + text);
+        throw new IllegalArgumentException("Tipo de cuenta no soportado: " + tipo);
     }
 }
+
+

@@ -7,6 +7,7 @@ public interface TransferenciaDao {
 
     void guardarTransferencia(Transferencia transferencia);
 
+
     List<Transferencia> findTransfersByID(long numeroCuenta);
 
     List<Transferencia> findAllTransfers();

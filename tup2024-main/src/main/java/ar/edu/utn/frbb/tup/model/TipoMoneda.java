@@ -1,25 +1,13 @@
 package ar.edu.utn.frbb.tup.model;
-
 public enum TipoMoneda {
-    PESOS("P"),
-    DOLARES("D");
+    PESOS, DOLARES;
 
-    private final String descripcion;
-
-    TipoMoneda(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public static TipoMoneda fromString(String text) {
-        for (TipoMoneda tipo : TipoMoneda.values()) {
-            if (tipo.descripcion.equalsIgnoreCase(text)) {
-                return tipo;
+    public static TipoMoneda fromString(String moneda) {
+        for (TipoMoneda tm : TipoMoneda.values()) {
+            if (tm.name().equalsIgnoreCase(moneda)) {
+                return tm;
             }
         }
-        throw new IllegalArgumentException("No se pudo encontrar un TipoMoneda con la descripción: " + text);
+        throw new IllegalArgumentException("Moneda no soportada: " + moneda);
     }
 }

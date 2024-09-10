@@ -10,37 +10,46 @@ import org.springframework.stereotype.Service;
 @Service
 public class CuentaDaoImpl implements CuentaDao {
 
-    private static final Map<Long, Cuenta> repositorioCuentas = new HashMap<>();
+    private final Map<Long, Cuenta> cuentas = new HashMap<>();
 
     @Override
     public Cuenta saveCuenta(Cuenta cuenta) {
-        repositorioCuentas.put(cuenta.getNumeroCuenta(), cuenta);
+        cuentas.put(cuenta.getNumeroCuenta(), cuenta);
         return cuenta;
     }
 
     @Override
     public Cuenta findCuenta(long numeroCuenta) {
-        return repositorioCuentas.get(numeroCuenta);
+        // Devuelve la cuenta correspondiente al número de cuenta, si existe
+        return cuentas.get(numeroCuenta);
     }
 
     @Override
     public List<Cuenta> findAllCuentas() {
-        return null;
+        // Devuelve una lista de todas las cuentas almacenadas
+        return new ArrayList<>(cuentas.values());
+    }
+    @Override
+    public Cuenta findByDni(long dni) {
+        return cuentas.values().stream()
+                .filter(cuenta -> cuenta.getdniTitular() == dni)
+                .findFirst()
+                .orElse(null);
     }
 
     @Override
-    public Cuenta darDeAltaCuenta(Cuenta cuenta) {
-        return null;
+    public void updateCuenta(Cuenta cuenta) {
+        // Actualiza la cuenta en el mapa si existe
+        if (cuentas.containsKey(cuenta.getNumeroCuenta())) {
+            cuentas.put(cuenta.getNumeroCuenta(), cuenta);
+        } else {
+            throw new IllegalArgumentException("La cuenta no existe");
+        }
     }
 
     @Override
-    public Cuenta updateCuenta(Cuenta cuenta) {
-        repositorioCuentas.put(cuenta.getNumeroCuenta(), cuenta);
-        return cuenta;
-    }
-
-    @Override
-    public void deleteCuenta(long id){
-        repositorioCuentas.remove(id);
+    public void deleteCuenta(long numeroCuenta) {
+        // Elimina la cuenta del mapa si existe
+        cuentas.remove(numeroCuenta);
     }
 }

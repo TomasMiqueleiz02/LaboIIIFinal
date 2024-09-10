@@ -1,21 +1,18 @@
 package ar.edu.utn.frbb.tup.service;
 
-import ar.edu.utn.frbb.tup.model.Cuenta;
-import ar.edu.utn.frbb.tup.model.TipoCuenta;
-import ar.edu.utn.frbb.tup.model.exception.CuentaNoEncontradaException;
+import ar.edu.utn.frbb.tup.controller.dto.CuentaDto;
+import ar.edu.utn.frbb.tup.model.exception.ClienteAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.CuentaAlreadyExistsException;
+import ar.edu.utn.frbb.tup.model.exception.NoAlcanzaException;
 
 import java.util.List;
 
 public interface CuentaService {
+    CuentaDto darDeAltaCuenta(CuentaDto cuentaDto)throws CuentaAlreadyExistsException;
+    CuentaDto buscarCuentaPorNumero(long numeroCuenta);
+    List<CuentaDto> obtenerTodasLasCuentas();
+    void eliminarCuenta(long numeroCuenta);
 
-    Cuenta darDeAltaCuenta(Cuenta cuenta);
-
-    boolean tipoCuentaEstaSoportada(TipoCuenta tipoCuenta);
-
-    Cuenta findByID(long numeroCuenta) throws CuentaNoEncontradaException;
-
-    List<Cuenta> findAll();
-
-    void eliminarCuenta(long numeroCuenta) throws CuentaNoEncontradaException;
 }
+
 

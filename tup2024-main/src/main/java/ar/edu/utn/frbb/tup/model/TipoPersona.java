@@ -1,26 +1,25 @@
 package ar.edu.utn.frbb.tup.model;
 
 public enum TipoPersona {
+    FISICA("F"), JURIDICA("J");
 
-    PERSONA_FISICA("F"),
-    PERSONA_JURIDICA("J");
+    private String codigo;
 
-    private final String descripcion;
-
-    TipoPersona(String descripcion) {
-        this.descripcion = descripcion;
+    TipoPersona(String codigo) {
+        this.codigo = codigo;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getCodigo() {
+        return codigo;
     }
 
-    public static TipoPersona fromString(String text) {
-        for (TipoPersona tipo : TipoPersona.values()) {
-            if (tipo.descripcion.equalsIgnoreCase(text)) {
+    public static TipoPersona fromCodigo(String codigo) {
+        for (TipoPersona tipo : values()) {
+            if (tipo.getCodigo().equals(codigo)) {
                 return tipo;
             }
         }
-        throw new IllegalArgumentException("No se pudo encontrar un TipoPersona con la descripción: " + text);
+        throw new IllegalArgumentException("Código no soportado: " + codigo);
     }
 }
+

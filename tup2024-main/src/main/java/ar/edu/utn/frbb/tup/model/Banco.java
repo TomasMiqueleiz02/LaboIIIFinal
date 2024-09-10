@@ -7,16 +7,6 @@ import java.util.List;
 
 @Component
 public class Banco {
-    private List<Cliente> clientes = new ArrayList<>();
-
-    public List<Cliente> getClientes() {
-        return clientes;
-    }
-
-    public void setClientes(List<Cliente> clientes) {
-        this.clientes = clientes;
-    }
-
     private double comisionPorGastosDeTransferenciaEnPesos = 0;
 
     private double comisionPorGastosDeTransferenciaEnDolares = 0;

@@ -1,5 +1,6 @@
 package ar.edu.utn.frbb.tup.service;
 
+import ar.edu.utn.frbb.tup.controller.dto.TransaccionDto;
 import ar.edu.utn.frbb.tup.controller.dto.TransferenciaDto;
 import ar.edu.utn.frbb.tup.model.Transferencia;
 import ar.edu.utn.frbb.tup.model.exception.*;
@@ -11,6 +12,8 @@ public interface TransferenciaService {
     Transferencia realizarTransferencia(TransferenciaDto transferenciaDto) throws Exception, NoAlcanzaException, CantidadNegativaException, CuentaNoEncontradaException, TipoMonedaException;
 
     List<Transferencia> find(long id);
+    List<TransaccionDto> obtenerHistorialTransacciones(long cuentaId) throws CuentaNoEncontradaException;
 
     List<Transferencia> findAll();
+
 }

@@ -5,31 +5,43 @@ import ar.edu.utn.frbb.tup.persistence.TransferenciaDao;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
+
 public class TransferenciaDaoImpl implements TransferenciaDao {
 
-    private List<Transferencia> transferencias = new ArrayList<>();
+    private final Map<Long, List<Transferencia>> repositorioTransferencias = new HashMap<>();
 
     @Override
     public void guardarTransferencia(Transferencia transferencia) {
-        transferencias.add(transferencia);
+        repositorioTransferencias
+                .computeIfAbsent(transferencia.getCuentaOrigen(), k -> new ArrayList<>())
+                .add(transferencia);
     }
 
     @Override
-    public List<Transferencia> findTransfersByID(long numeroCuenta) {
-        List<Transferencia> resultado = new ArrayList<>();
-        for (Transferencia transferencia : transferencias) {
-            if (transferencia.getCuentaOrigen() == numeroCuenta ||
-                    transferencia.getCuentaDestino() == numeroCuenta) {
-                resultado.add(transferencia);
-            }
+    public List<Transferencia> findTransfersByID(long id) {
+        return repositorioTransferencias.getOrDefault(id, new ArrayList<>());
+    }
+
+    @Override
+    public List<Transferencia> findAllTransfers() {
+        List<Transferencia> todasLasTransferencias = new ArrayList<>();
+        for (List<Transferencia> transferencias : repositorioTransferencias.values()) {
+            todasLasTransferencias.addAll(transferencias);
         }
-        return resultado;
+        return todasLasTransferencias;
     }
 
 
-    @Override
-    public List<Transferencia> findAllTransfers(){return transferencias;}
+
+    // Método para limpiar el repositorio
+    public void clearRepository() {
+        repositorioTransferencias.clear();
+    }
 }
+
+
