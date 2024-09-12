@@ -7,7 +7,7 @@ import ar.edu.utn.frbb.tup.model.exception.CuentaNoEncontradaException;
 import ar.edu.utn.frbb.tup.persistence.CuentaDao;
 import org.springframework.stereotype.Service;
 
-@Service
+@Repository
 public class CuentaDaoImpl implements CuentaDao {
 
     private final Map<Long, Cuenta> cuentas = new HashMap<>();
